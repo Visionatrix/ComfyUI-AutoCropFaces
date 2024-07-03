@@ -1,6 +1,8 @@
 import torch
 from .Pytorch_Retinaface.pytorch_retinaface import Pytorch_RetinaFace
 
+from comfy.model_management import get_torch_device
+
 class AutoCropFaces:
     def __init__(self):
         pass
@@ -60,7 +62,7 @@ class AutoCropFaces:
         right, bottom = image_without_batch.shape[:2]
         original_size = (right, bottom)
         image_255 = image_without_batch * 255
-        rf = Pytorch_RetinaFace(top_k=50, keep_top_k=max_number_of_faces)
+        rf = Pytorch_RetinaFace(top_k=50, keep_top_k=max_number_of_faces, device=get_torch_device())
         dets = rf.detect_faces(image_255)
         cropped_images, bbox_infos = rf.center_and_crop_rescale(image_without_batch, dets, scale_factor=scale_factor, shift_factor=shift_factor, aspect_ratio=aspect_ratio)
         if len(cropped_images)>=1:
